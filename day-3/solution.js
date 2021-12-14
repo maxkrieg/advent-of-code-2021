@@ -1,7 +1,6 @@
 const input = require('./input').default
 
 const partOne = () => {
-  const mostCommonList = []
   const counts = [
     { 0: 0, 1: 0 },
     { 0: 0, 1: 0 },
@@ -18,8 +17,6 @@ const partOne = () => {
   ]
   for (let i = 0; i < input.length; i++) {
     const current = input[i]
-    console.log('-----------------')
-    console.log(current)
     current.split('').forEach((n, i) => {
       counts[i][n] += 1
     })
@@ -53,7 +50,6 @@ const partOne = () => {
   }
 }
 
-// start with oxygen generator rating
 const getRating = (type, currentInput, idx) => {
   if (currentInput.length === 1) return currentInput[0]
 
@@ -67,8 +63,6 @@ const getRating = (type, currentInput, idx) => {
       numbersWithLeadingOne.push(num)
     }
   })
-
-  console.log({ startsWithOneLength: numbersWithLeadingOne.length, startsWithZeroLength: numbersWithLeadingZero.length })
 
   if (numbersWithLeadingOne.length >= numbersWithLeadingZero.length) {
     return getRating(type, type === 'oxygen_generator' ? numbersWithLeadingOne : numbersWithLeadingZero, idx + 1)

@@ -27,10 +27,7 @@ const partTwo = () => {
   let horizontal = 0
   let depth = 0
   for (let i = 0; i < input.length; i++) {
-    console.log('------------------')
-    console.log({aim, horizontal, depth})
     const [command, amount] = input[i]
-    console.log({command, amount})
     switch (command) {
       case 'forward':
         console.log('increasing forward by', amount)
@@ -50,7 +47,6 @@ const partTwo = () => {
       default:
         continue
     }
-    console.log({aim, horizontal, depth})
   }
   return { aim, horizontal, depth, multiplied: horizontal * depth }
 }
