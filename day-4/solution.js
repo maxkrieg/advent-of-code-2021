@@ -75,22 +75,67 @@ const updateBoards = (boards, draw) => {
   return [boards, null]
 }
 
-const getWinningBoard = (boards, draws, drawIdx) => {
+const updateBoardsAndRemoveWinner = (boards, draw) => {
+  let lastWinner
+  for (let i = 0; i < boards.length; i++) {
+    const board = boards[i]
+    
+    for (let j = 0; j < board.length; j++) {
+      const row = board[j]
+      const idxMatch = row.indexOf(draw)
+      if (idxMatch >= 0) {
+        row.splice(idxMatch, 1, 'x')
+      }
+    }
+
+    if (isWinningBoard(board)) {
+      const spliced = boards.splice(i, 1)
+      lastWinner = spliced[0]
+      i--
+    }
+  }
+  return [boards, lastWinner]
+}
+
+const getFirstWinningBoard = (boards, draws, drawIdx) => {
   const currentDraw = draws[drawIdx]
   const [updatedBoards, winningBoard] = updateBoards(boards, currentDraw)
   if (!winningBoard) {
-    return getWinningBoard(updatedBoards, draws, drawIdx + 1)
+    return getFirstWinningBoard(updatedBoards, draws, drawIdx + 1)
   }
-  return [winningBoard, draws[drawIdx]]
+  return [winningBoard, currentDraw]
 }
 
+const getLastWinningBoard = (boards, draws, drawIdx) => {
+  const currentDraw = draws[drawIdx]
+  const [updatedBoards, lastWinner] = updateBoardsAndRemoveWinner(boards, currentDraw)
+  if (updatedBoards.length === 0) {
+    return [lastWinner, currentDraw]
+  }
+  
+  return getLastWinningBoard(updatedBoards, draws, drawIdx + 1)
+}
 
-const main = () => {
+const sumOfNonDrawnNumbers = (board) => board.flat().filter(v => v !== 'x').reduce((a, b) => a + b)
+
+const partOne = () => {
   const boards = getBoards()
-  const [winningBoard, lastDraw] = getWinningBoard(boards, draws, 0)
-  const sum = winningBoard.flat().filter(v => v !== 'x').reduce((a, b) => a + b)
-  const solution = sum * lastDraw
-  return { winningBoard, lastDraw, sum, solution }
+  
+  const [firstWinningBoard, lastDraw] = getFirstWinningBoard(boards, draws, 0)
+  const firstSum = sumOfNonDrawnNumbers(firstWinningBoard)
+  const firstSolution = firstSum * lastDraw
+  
+  return { firstWinningBoard, lastDraw, firstSum, firstSolution }
 }
 
-console.log(main())
+const partTwo = () => {
+  const boards = getBoards()  
+  const [lastWinningBoard, lastDraw] = getLastWinningBoard(boards, draws, 0)
+  const lastSum = sumOfNonDrawnNumbers(lastWinningBoard)
+  const lastSolution = lastSum * lastDraw
+  
+  return { lastWinningBoard, lastDraw, lastSum, lastSolution }
+}
+
+console.log(partOne())
+console.log(partTwo())
